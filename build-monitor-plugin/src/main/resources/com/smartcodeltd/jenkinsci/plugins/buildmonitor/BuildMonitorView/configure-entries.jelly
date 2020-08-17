@@ -68,6 +68,11 @@
     </select>
   </f:entry>
 
+    <f:entry title="${%Advanced order with ordinal set}" help="${descriptor.getHelpFile('ordinalSet')}">
+      <f:textbox name="ordinalSet" value="${it.currentOrdinalSet()}"/>
+    </f:entry>
+
+
   </f:section>
 
   <f:section title="${%Build Monitor - Widget Settings}">

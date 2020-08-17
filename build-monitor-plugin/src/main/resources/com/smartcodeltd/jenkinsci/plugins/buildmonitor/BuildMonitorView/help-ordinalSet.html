@@ -1,0 +1,43 @@
+<div>
+    <p>
+        Define an <strong>ordinal set</strong> to have an advanced control ordering the jobs. The entries in the ordinal set
+        have to be separated by the "<i><code>&lt;</code></i>" character.
+        <br/>
+        Each match of the ordinal set in a job's full name, would insert the ordinal number
+        in front of the matching entry, when comparing job names.
+    </p>
+    <h4>Example</h4>
+    <p>
+        Precondition:
+        <ul>
+            <li>Jobs:
+                <ul>
+                    <li>HelloApp/Deploy_to_Test</li>
+                    <li>DemoApp/Deploy_to_Test</li>
+                    <li>DemoApp/Deploy_to_Prod</li>
+                </ul>
+            </li>
+            <li>Ordinal Set:
+                <ul>
+                    <li><code>CI_Pipeline &lt; Deploy_to_Test &lt; Deploy_to_Prod</code></li>
+                    <li>I.e. string "CI_Pipeline" has ordinal number "#0", "Deploy_to_Test" has "#1", and "Deploy_to_Prod" has "#2"</li>
+                </ul>
+            </li>
+        </ul>
+
+        Therefore the following is compared:
+        <ul>
+            <li>HelloApp/<b>#1_</b>Deploy_to_Test</li>
+            <li>DemoApp/<b>#1_</b>Deploy_to_Test</li>
+            <li>DemoApp/<b>#2_</b>Deploy_to_Prod</li>
+        </ul>
+
+
+        Therefore this results in job order:
+        <ol>
+            <li>DemoApp/Deploy_to_Test</li>
+            <li>DemoApp/Deploy_to_Prod</li>
+            <li>HelloApp/Deploy_to_Test</li>
+        </ol>
+    </p>
+</div>

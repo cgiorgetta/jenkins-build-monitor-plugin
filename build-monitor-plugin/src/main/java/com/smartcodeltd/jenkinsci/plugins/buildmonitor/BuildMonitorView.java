@@ -26,6 +26,8 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.api.Respond;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.facade.StaticJenkinsAPIs;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.installation.BuildMonitorInstallation;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByFullName;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByFullName.OrdinalSet;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobView;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobViews;
 import hudson.Extension;
@@ -86,6 +88,15 @@ public class BuildMonitorView extends ListView {
         return currentConfig().getOrder().getClass().getSimpleName();
     }
     
+   @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentOrdinalSet() {
+       if (currentConfig().getOrder() instanceof ByFullName) {
+           return ((ByFullName) currentConfig().getOrder()).getOrdinalSet().toParameter();
+       } else {
+           return "";
+       }
+    }
+
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
     public String currentbuildFailureAnalyzerDisplayedField() {
         return currentConfig().getBuildFailureAnalyzerDisplayedField().getValue();
@@ -127,7 +138,12 @@ public class BuildMonitorView extends ListView {
             currentConfig().setBuildFailureAnalyzerDisplayedField(req.getParameter("buildFailureAnalyzerDisplayedField"));
             
             try {
-                currentConfig().setOrder(orderIn(requestedOrdering));
+                Comparator<Job<?, ?>> jobComparator = orderIn(requestedOrdering);
+                if (jobComparator instanceof ByFullName) {
+                    OrdinalSet ordinalSet = OrdinalSet.fromParameter(req.getParameter("ordinalSet"));
+                    ((ByFullName) jobComparator).setOrdinalSet(ordinalSet);
+                }
+                currentConfig().setOrder(jobComparator);
             } catch (Exception e) {
                 throw new FormException("Can't order projects by " + requestedOrdering, "order");
             }
