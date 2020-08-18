@@ -53,12 +53,12 @@
 
   <f:section title="${%Build Monitor - View Settings}">
 
-  <f:entry title="${%Title}">
+  <f:entry title="${%Title}" >
     <f:textbox name="title" value="${it.title}"/>
   </f:entry>
 
-  <f:entry title="${%Ordered by}">
-    <select name="order" class="setting-input">
+  <f:entry title="${%Ordered by}" field="orderSelection">
+    <select name="order" id="orderSelection" class="setting-input">
       <f:option value="ByName" selected='${it.currentOrder()=="ByName"}'>${%Name}</f:option>
       <f:option value="ByDisplayName" selected="${it.currentOrder()=='ByDisplayName'}">${%Display name}</f:option>
       <f:option value="ByFullName" selected="${it.currentOrder()=='ByFullName'}">${%Full name}</f:option>
@@ -68,10 +68,9 @@
     </select>
   </f:entry>
 
-    <f:entry title="${%Advanced order with ordinal set}" help="${descriptor.getHelpFile('ordinalSet')}">
-      <f:textbox name="ordinalSet" value="${it.currentOrdinalSet()}"/>
-    </f:entry>
-
+  <f:entry title="${%Advanced order with ordinal set}" help="${descriptor.getHelpFile('ordinalSet')}">
+    <f:textbox name="ordinalSet" value="${it.currentOrdinalSet()}"/>
+  </f:entry>
 
   </f:section>
 
@@ -92,15 +91,34 @@
   </f:section>
 
   <script>
-    (function() {
-      Behaviour.specify("#recurse", 'ListView', 0, function(e) {
+    (function () {
+      Behaviour.specify("#recurse", 'ListView', 0, function (e) {
         var nestedElements = $$('SPAN.nested')
-        e.onclick = function() {
-          nestedElements.each(function(el) {
+        e.onclick = function () {
+          nestedElements.each(function (el) {
             e.checked ? el.show() : el.hide();
           });
         }
       });
+    }());
+
+    (function () {
+      function updateOrdinalSetVisibility(orderSelection) {
+        var ordinalSetConfigSection = document.evaluate('//input[@name='ordinalSet']/../..', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (orderSelection.value === 'ByFullName') {
+          ordinalSetConfigSection.show();
+        } else {
+          ordinalSetConfigSection.hide();
+        }
+      }
+
+      Behaviour.specify('#orderSelection', 'ListView', 0, function (orderSelection) {
+        orderSelection.onchange = function () {
+          updateOrdinalSetVisibility(orderSelection);
+        }
+      });
+
+      updateOrdinalSetVisibility(orderSelection);
     }());
   </script>
 
