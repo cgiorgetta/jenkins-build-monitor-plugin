@@ -1,9 +1,10 @@
 <div>
     <p>
-        Define an <strong>ordinal set</strong> to have an advanced control ordering the jobs. The entries in the ordinal set
-        have to be separated by the "<i><code>&lt;</code></i>" character.
+        If left blank, the jobs are in alphabetical order. But if you would like to have another
+        jobs order, then you may define an <strong>ordinal set</strong> to get an advanced order control
+        The entries in the ordinal are separated by "<i><code>&lt;</code></i>" character.
         <br/>
-        Each match of the ordinal set in a job's full name, would insert the ordinal number
+        Each match of the ordinal set in a job's full name, would virtually insert the ordinal number
         in front of the matching entry, when comparing job names.
     </p>
     <h4>Example</h4>
@@ -12,6 +13,7 @@
         <ul>
             <li>Jobs:
                 <ul>
+                    <li>HelloApp/CI_Pipeline</li>
                     <li>HelloApp/Deploy_to_Test</li>
                     <li>DemoApp/Deploy_to_Test</li>
                     <li>DemoApp/Deploy_to_Prod</li>
@@ -27,6 +29,7 @@
 
         Therefore the following is compared:
         <ul>
+            <li>HelloApp/<b>#0_</b>CI_Pipeline</li>
             <li>HelloApp/<b>#1_</b>Deploy_to_Test</li>
             <li>DemoApp/<b>#1_</b>Deploy_to_Test</li>
             <li>DemoApp/<b>#2_</b>Deploy_to_Prod</li>
@@ -37,6 +40,7 @@
         <ol>
             <li>DemoApp/Deploy_to_Test</li>
             <li>DemoApp/Deploy_to_Prod</li>
+            <li>HelloApp/CI_Pipeline</li>
             <li>HelloApp/Deploy_to_Test</li>
         </ol>
     </p>

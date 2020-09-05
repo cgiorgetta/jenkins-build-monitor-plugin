@@ -57,8 +57,8 @@
     <f:textbox name="title" value="${it.title}"/>
   </f:entry>
 
-  <f:entry title="${%Ordered by}" field="orderSelection">
-    <select name="order" id="orderSelection" class="setting-input">
+  <f:entry title="${%Ordered by}">
+    <select name="order" id="orderSelection" class="setting-input" onchange="adjustVisibilityOfOrdinalSet()">
       <f:option value="ByName" selected='${it.currentOrder()=="ByName"}'>${%Name}</f:option>
       <f:option value="ByDisplayName" selected="${it.currentOrder()=='ByDisplayName'}">${%Display name}</f:option>
       <f:option value="ByFullName" selected="${it.currentOrder()=='ByFullName'}">${%Full name}</f:option>
@@ -102,24 +102,17 @@
       });
     }());
 
-    (function () {
-      function updateOrdinalSetVisibility(orderSelection) {
-        var ordinalSetConfigSection = document.evaluate('//input[@name='ordinalSet']/../..', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        if (orderSelection.value === 'ByFullName') {
-          ordinalSetConfigSection.show();
+    function adjustVisibilityOfOrdinalSet() {
+        var selectedOrder = $('orderSelection').value;
+        var ordinalSetRow = $$('input[name="ordinalSet"]').first().parentNode.parentNode;
+        if (selectedOrder === 'ByFullName') {
+          ordinalSetRow.show();
         } else {
-          ordinalSetConfigSection.hide();
+          ordinalSetRow.hide();
         }
-      }
+    }
 
-      Behaviour.specify('#orderSelection', 'ListView', 0, function (orderSelection) {
-        orderSelection.onchange = function () {
-          updateOrdinalSetVisibility(orderSelection);
-        }
-      });
-
-      updateOrdinalSetVisibility(orderSelection);
-    }());
+    adjustVisibilityOfOrdinalSet();
   </script>
 
 </j:jelly>
