@@ -10,7 +10,6 @@ import hudson.model.Job;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.util.RunList;
-
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Date;
@@ -29,19 +28,22 @@ public class JobView {
     private final Job<?, ?> job;
     private final boolean isPipelineJob;
     private final RelativeLocation relative;
+    private final boolean showSimpleJobName;
 
     private final List<Feature> features = newArrayList();
 
-    public static JobView of(Job<?, ?> job, List<Feature> features, boolean isPipelineJob) {
-        return new JobView(job, features, isPipelineJob, RelativeLocation.of(job), new Date());
+    public static JobView of(Job<?, ?> job, List<Feature> features, boolean isPipelineJob, boolean simpleJobName) {
+        return new JobView(job, features, isPipelineJob, RelativeLocation.of(job), new Date(), simpleJobName);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "systemTime is non-critical and no security should be compromised by mutating")
-    public JobView(Job<?, ?> job, List<Feature> features, boolean isPipelineJob, RelativeLocation relative, Date systemTime) {
+    public JobView(Job<?, ?> job, List<Feature> features, boolean isPipelineJob, RelativeLocation relative, Date systemTime,
+                   boolean showSimpleJobName) {
         this.job           = job;
         this.isPipelineJob = isPipelineJob;
         this.relative      = relative;
         this.systemTime    = systemTime;
+        this.showSimpleJobName = showSimpleJobName;
 
         for (Feature feature : features) {
             this.features.add(feature.of(this));
@@ -63,6 +65,9 @@ public class JobView {
     }
 
     public String name() {
+        if (showSimpleJobName) {
+            return job.getDisplayName();
+        }
         return relative.name();
     }
 

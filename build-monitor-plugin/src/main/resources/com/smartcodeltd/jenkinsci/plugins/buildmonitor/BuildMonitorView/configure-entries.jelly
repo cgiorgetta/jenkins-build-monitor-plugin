@@ -72,6 +72,10 @@
     <f:textbox name="ordinalSet" value="${it.currentOrdinalSet()}"/>
   </f:entry>
 
+  <f:entry title="${%Display title bar to job clusters}" help="${descriptor.getHelpFile('displayClusterTitle')}">
+    <f:checkbox id="displayClusterTitle" field="displayClusterTitle" />
+  </f:entry>
+
   </f:section>
 
   <f:section title="${%Build Monitor - Widget Settings}">

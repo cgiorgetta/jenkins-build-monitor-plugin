@@ -30,6 +30,7 @@ import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByFullName;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByFullName.OrdinalSet;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobView;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobViews;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.ClusterTitleJobView;
 import hudson.Extension;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
@@ -69,7 +70,7 @@ public class BuildMonitorView extends ListView {
     }
 
     @SuppressWarnings("unused") // used in .jelly
-    public String getTitle() {
+    public String getClusterTitle() {
         return isGiven(title) ? title : getDisplayName();
     }
 
@@ -100,6 +101,11 @@ public class BuildMonitorView extends ListView {
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
     public String currentbuildFailureAnalyzerDisplayedField() {
         return currentConfig().getBuildFailureAnalyzerDisplayedField().getValue();
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public boolean isDisplayClusterTitle() {
+        return currentConfig().shouldDisplayClusterTitle();
     }
 
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
@@ -134,6 +140,7 @@ public class BuildMonitorView extends ListView {
             String requestedOrdering = req.getParameter("order");
             title                    = req.getParameter("title");
 
+            currentConfig().setDisplayClusterTitle(json.optBoolean("displayClusterTitle", true));
             currentConfig().setDisplayCommitters(json.optBoolean("displayCommitters", true));
             currentConfig().setBuildFailureAnalyzerDisplayedField(req.getParameter("buildFailureAnalyzerDisplayedField"));
             
@@ -177,11 +184,25 @@ public class BuildMonitorView extends ListView {
 
         Collections.sort(projects, currentConfig().getOrder());
 
+        String currentClusterTitle = null;
         for (Job project : projects) {
-            jobs.add(views.viewOf(project));
+            JobView job = views.viewOf(project);
+            if (config.shouldDisplayClusterTitle() && !getClusterTitle(project).equals(currentClusterTitle)) {
+                jobs.add(ClusterTitleJobView.create(project.getParent()));
+                currentClusterTitle = getClusterTitle(project);
+            }
+            jobs.add(job);
         }
 
         return jobs;
+    }
+
+    /**
+     * @return job title which consists of the name of the top level folder.
+     */
+    private static String getClusterTitle(Job job) {
+        String fullName = job.getFullName();
+        return fullName.substring(0, fullName.indexOf('/') + 1);
     }
 
     /**

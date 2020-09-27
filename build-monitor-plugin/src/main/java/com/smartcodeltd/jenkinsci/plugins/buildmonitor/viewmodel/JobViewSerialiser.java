@@ -14,12 +14,13 @@ public class JobViewSerialiser extends JsonSerializer<JobView> {
     @Override
     public void serialize(JobView job, JsonGenerator jgen, SerializerProvider provider) throws IOException {
         jgen.writeStartObject();
-        jgen.writeObjectField("name",               job.name());
-        jgen.writeObjectField("url",                job.url());
-        jgen.writeObjectField("status",             job.status());
-        jgen.writeObjectField("hashCode",           job.hashCode());
-        jgen.writeObjectField("progress",           job.progress());
-        jgen.writeObjectField("estimatedDuration",  job.estimatedDuration());
+        jgen.writeObjectField("name", job.name());
+        jgen.writeObjectField("isClusterTitle", job instanceof ClusterTitleJobView);
+        jgen.writeObjectField("url", job.url());
+        jgen.writeObjectField("status", job.status());
+        jgen.writeObjectField("hashCode", job.hashCode());
+        jgen.writeObjectField("progress", job.progress());
+        jgen.writeObjectField("estimatedDuration", job.estimatedDuration());
 
         for (Feature<?> feature : job.features()) {
             Object serialised = feature.asJson();
