@@ -187,9 +187,9 @@ public class BuildMonitorView extends ListView {
         String currentClusterTitle = null;
         for (Job project : projects) {
             JobView job = views.viewOf(project);
-            if (config.shouldDisplayClusterTitle() && !getTitle(project).equals(currentClusterTitle)) {
+            if (config.shouldDisplayClusterTitle() && !getClusterTitle(project).equals(currentClusterTitle)) {
                 jobs.add(ClusterTitleJobView.create(project.getParent()));
-                currentClusterTitle = getTitle(project);
+                currentClusterTitle = getClusterTitle(project);
             }
             jobs.add(job);
         }
@@ -200,7 +200,7 @@ public class BuildMonitorView extends ListView {
     /**
      * @return job title which consists of the name of the top level folder.
      */
-    private static String getTitle(Job job) {
+    private static String getClusterTitle(Job job) {
         String fullName = job.getFullName();
         return fullName.substring(0, fullName.indexOf('/') + 1);
     }
