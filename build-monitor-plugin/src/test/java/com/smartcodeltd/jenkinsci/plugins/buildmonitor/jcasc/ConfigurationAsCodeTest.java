@@ -31,7 +31,7 @@ public class ConfigurationAsCodeTest {
         assertThat(views.size(), is(1));
 
         BuildMonitorView view = (BuildMonitorView) views.iterator().next();
-        assertThat(view.getClusterTitle(), is("My Monitor"));
+        assertThat(view.getTitle(), is("My Monitor"));
         assertThat(view.getIncludeRegex(), is(".+\\/(my-job-.*)\\/(master|demo)"));
         assertThat(view.getViewName(), is("My-Monitor"));
         assertThat(view.isRecurse(), is(true));
