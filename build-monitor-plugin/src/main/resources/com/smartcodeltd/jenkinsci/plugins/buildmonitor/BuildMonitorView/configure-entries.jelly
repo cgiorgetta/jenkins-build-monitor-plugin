@@ -53,7 +53,7 @@
 
   <f:section title="${%Build Monitor - View Settings}">
 
-  <f:entry title="${%Title}" >
+  <f:entry title="${%Title}">
     <f:textbox name="title" value="${it.title}"/>
   </f:entry>
 
@@ -95,11 +95,11 @@
   </f:section>
 
   <script>
-    (function () {
-      Behaviour.specify("#recurse", 'ListView', 0, function (e) {
+    (function() {
+      Behaviour.specify("#recurse", 'ListView', 0, function(e) {
         var nestedElements = $$('SPAN.nested')
-        e.onclick = function () {
-          nestedElements.each(function (el) {
+        e.onclick = function() {
+          nestedElements.each(function(el) {
             e.checked ? el.show() : el.hide();
           });
         }

@@ -70,7 +70,7 @@ public class BuildMonitorView extends ListView {
     }
 
     @SuppressWarnings("unused") // used in .jelly
-    public String getClusterTitle() {
+    public String getTitle() {
         return isGiven(title) ? title : getDisplayName();
     }
 
@@ -187,9 +187,9 @@ public class BuildMonitorView extends ListView {
         String currentClusterTitle = null;
         for (Job project : projects) {
             JobView job = views.viewOf(project);
-            if (config.shouldDisplayClusterTitle() && !getClusterTitle(project).equals(currentClusterTitle)) {
+            if (config.shouldDisplayClusterTitle() && !getTitle(project).equals(currentClusterTitle)) {
                 jobs.add(ClusterTitleJobView.create(project.getParent()));
-                currentClusterTitle = getClusterTitle(project);
+                currentClusterTitle = getTitle(project);
             }
             jobs.add(job);
         }
@@ -200,7 +200,7 @@ public class BuildMonitorView extends ListView {
     /**
      * @return job title which consists of the name of the top level folder.
      */
-    private static String getClusterTitle(Job job) {
+    private static String getTitle(Job job) {
         String fullName = job.getFullName();
         return fullName.substring(0, fullName.indexOf('/') + 1);
     }
