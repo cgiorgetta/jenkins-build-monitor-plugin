@@ -28,22 +28,22 @@ public class JobView {
     private final Job<?, ?> job;
     private final boolean isPipelineJob;
     private final RelativeLocation relative;
-    private final boolean showSimpleJobName;
+    private final boolean showShortenedJobName;
 
     private final List<Feature> features = newArrayList();
 
-    public static JobView of(Job<?, ?> job, List<Feature> features, boolean isPipelineJob, boolean simpleJobName) {
-        return new JobView(job, features, isPipelineJob, RelativeLocation.of(job), new Date(), simpleJobName);
+    public static JobView of(Job<?, ?> job, List<Feature> features, boolean isPipelineJob, boolean showShortenedJobName) {
+        return new JobView(job, features, isPipelineJob, RelativeLocation.of(job), new Date(), showShortenedJobName);
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "systemTime is non-critical and no security should be compromised by mutating")
     public JobView(Job<?, ?> job, List<Feature> features, boolean isPipelineJob, RelativeLocation relative, Date systemTime,
-                   boolean showSimpleJobName) {
+                   boolean showShortenedJobName) {
         this.job           = job;
         this.isPipelineJob = isPipelineJob;
         this.relative      = relative;
         this.systemTime    = systemTime;
-        this.showSimpleJobName = showSimpleJobName;
+        this.showShortenedJobName = showShortenedJobName;
 
         for (Feature feature : features) {
             this.features.add(feature.of(this));
@@ -65,10 +65,11 @@ public class JobView {
     }
 
     public String name() {
-        if (showSimpleJobName) {
-            return job.getDisplayName();
+        String name = relative.name();
+        if (showShortenedJobName) {
+            name = name.substring(name.indexOf('»') + 1);
         }
-        return relative.name();
+        return name;
     }
 
     public String url() {
