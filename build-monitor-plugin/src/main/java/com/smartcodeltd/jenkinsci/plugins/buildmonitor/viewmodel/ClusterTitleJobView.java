@@ -20,9 +20,9 @@ public class ClusterTitleJobView extends JobView {
 
     public static ClusterTitleJobView create(ItemGroup parent) {
         ItemGroup topLevelItem = getTopLevelItem(parent);
-        Job dummyJob = new FreeStyleProject(topLevelItem, "");
+        Job clusterTitle = new FreeStyleProject(topLevelItem, "");
         String url = topLevelItem instanceof Folder ? ((Folder) topLevelItem).getShortUrl() : topLevelItem.getUrl();
-        return new ClusterTitleJobView(dummyJob, url);
+        return new ClusterTitleJobView(clusterTitle, url);
     }
 
     private static ItemGroup getTopLevelItem(ItemGroup job) {
@@ -38,8 +38,8 @@ public class ClusterTitleJobView extends JobView {
         return ig;
     }
 
-    private ClusterTitleJobView(Job<?, ?> dummyJob, String url) {
-        super(dummyJob, Collections.emptyList(), false, RelativeLocation.of(dummyJob), new Date(), false);
+    private ClusterTitleJobView(Job<?, ?> clusterTitle, String url) {
+        super(clusterTitle, Collections.emptyList(), false, RelativeLocation.of(clusterTitle), new Date(), false);
         this.url = url;
     }
 
