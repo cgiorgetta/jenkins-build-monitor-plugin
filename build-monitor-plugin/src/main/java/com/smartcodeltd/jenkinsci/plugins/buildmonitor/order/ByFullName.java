@@ -23,17 +23,21 @@ public class ByFullName implements Comparator<Job<?, ?>>, Serializable {
     @Override
     public int compare(Job<?, ?> a, Job<?, ?> b) {
         if (ordinalSet != null) {
-            return ordinalSet.expandWithOrdinalNumber(a.getFullName()).compareToIgnoreCase(
-                    ordinalSet.expandWithOrdinalNumber(b.getFullName())
+            return ordinalSet.expandWithOrdinalString(a.getFullName()).compareToIgnoreCase(
+                    ordinalSet.expandWithOrdinalString(b.getFullName())
             );
         }
         return a.getFullName().compareToIgnoreCase(b.getFullName());
     }
 
     public static class OrdinalSet {
+        private static final String ORDINAL_CHAR = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private final List<String> entries;
 
         public OrdinalSet(List<String> entries) {
+            if (entries.size() > ORDINAL_CHAR.length()) {
+                throw new IllegalArgumentException("Too many ordinal set entries");
+            }
             this.entries = entries;
         }
 
@@ -41,10 +45,10 @@ public class ByFullName implements Comparator<Job<?, ?>>, Serializable {
             return entries;
         }
 
-        String expandWithOrdinalNumber(String name) {
+        String expandWithOrdinalString(String name) {
             if (entries != null) {
                 for(int i = 0; i< entries.size(); i++) {
-                    name = name.replaceAll(entries.get(i), "#" + i + "_" + entries.get(i));
+                    name = name.replaceAll(entries.get(i), "#" + ORDINAL_CHAR.charAt(i) + "_" + entries.get(i));
                 }
             }
             return name;

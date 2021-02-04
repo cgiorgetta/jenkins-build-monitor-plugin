@@ -60,13 +60,29 @@ public class ByFullNameTest extends TestCase {
         assertThat(comparator.compare(jobB5, jobB6), lessThan(0));
     }
 
-    public void testGetFullNameWithOrdinalIndex() {
+    public void testCompare_havingALargeOrdinalSet() {
+        // when
+        ByFullName comparator = new ByFullName();
+        comparator.setOrdinalSet(new OrdinalSet(Arrays.asList(
+                "t01", "t02", "t03", "t04", "t05", "t06", "t07", "t08", "t09", "t10",
+                "p01", "p02", "p03", "p04", "p05", "p06", "p07", "p08", "p09", "p10")));
+        ItemGroup folderA = mock(ItemGroup.class);
+        when(folderA.getFullName()).thenReturn("MegaApp");
+        Job job1 = new WorkflowJob(folderA, "Job t01");
+        Job job2 = new WorkflowJob(folderA, "Job t10");
+        Job job3 = new WorkflowJob(folderA, "Job p01");
+        // then
+        assertThat(comparator.compare(job1, job2), lessThan(0));
+        assertThat(comparator.compare(job2, job3), lessThan(0));
+    }
+
+    public void testGetFullNameWithOrdinalString() {
         // when
         OrdinalSet ordinalSet = new OrdinalSet(Arrays.asList("CI_Pipeline", "Deploy_Test", "Deploy_Prod"));
         // then
-        assertThat(ordinalSet.expandWithOrdinalNumber("DemoApp/CI_Pipeline"), is("DemoApp/#0_CI_Pipeline"));
-        assertThat(ordinalSet.expandWithOrdinalNumber("DemoApp/Deploy_Prod"), is("DemoApp/#2_Deploy_Prod"));
-        assertThat(ordinalSet.expandWithOrdinalNumber("DemoApp/QA_Check"), is("DemoApp/QA_Check"));
+        assertThat(ordinalSet.expandWithOrdinalString("DemoApp/CI_Pipeline"), is("DemoApp/#0_CI_Pipeline"));
+        assertThat(ordinalSet.expandWithOrdinalString("DemoApp/Deploy_Prod"), is("DemoApp/#2_Deploy_Prod"));
+        assertThat(ordinalSet.expandWithOrdinalString("DemoApp/QA_Check"), is("DemoApp/QA_Check"));
     }
 
     public void testOrdinalSetFromParameter() {
@@ -75,6 +91,20 @@ public class ByFullNameTest extends TestCase {
         // then
         List<String> expectedEntries = Arrays.asList("CI_Pipeline", "Deploy_Test", "Deploy_Prod");
         assertEquals(expectedEntries, ordinalSet.getEntries());
+    }
+
+    public void testOrdinalSetFromParameter_MaxOrdinalSetEntries() {
+        new OrdinalSet(Arrays.asList(new String[36]));
+        // ...no exception thrown
+    }
+
+    public void testOrdinalSetFromParameter_TooManyOrdinalSetEntries() {
+        try {
+            new OrdinalSet(Arrays.asList(new String[37]));
+            fail("Expect IllegalArgumentException as we have too many entries");
+        } catch (IllegalArgumentException ignore) {
+            // as expected
+        }
     }
 
     public void testOrdinalSetToParameter() {
